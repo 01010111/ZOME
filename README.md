@@ -23,3 +23,4 @@ The Zero One Map Editor (ZOME) is a tilemap editor made to be quick, fast, and d
 - Shift+Click on tilemap - paint random tile from selected tiles to map
 
 ### [Get it on itch.io ->](https://01010111.itch.io/zome)
+#### (currently unavailaible)
