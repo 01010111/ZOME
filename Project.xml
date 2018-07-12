@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<!-- _________________________ Application Settings _________________________ -->
+
+	<app title="ZERO ONE MAP EDITOR" file="ZOME" main="Main" version="0.1.0" company="01010111" unless="debug" />
+	<app title="ZERO ONE MAP EDITOR" file="ZOME_DEBUG" main="Main" version="0.1.0" company="01010111" if="debug" />
+
+	<!-- ____________________________ Window Settings ___________________________ -->
+
+	<window width="1280" height="800" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+
+	<!-- _____________________________ Path Settings ____________________________ -->
+
+	<set name="BUILD_DIR" value="export" if='debug' />
+	<set name="BUILD_DIR" value="release" unless='debug' />
+	<classpath name="source" />
+	<assets path="assets" />
+
+	<!-- _______________________________ Libraries ______________________________ -->
+
+	<haxelib name="flixel" />
+	<haxelib name="systools" />
+	<ndll name="systools" haxelib="systools" />
+
+	<!-- ______________________________ Haxedefines _____________________________ -->
+
+	<haxedef name="FLX_NO_MOUSE" if="mobile" />
+	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
+	<haxedef name="FLX_NO_TOUCH" if="desktop" />
+	<haxedef name="FLX_NO_GAMEPAD" />
+	<haxedef name="FLX_NO_SOUND_TRAY" />
+	<haxedef name="FLX_NO_SOUND_SYSTEM" />
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+
+	<!-- _________________________________ Custom _______________________________ -->
+
+	<icon path="assets/images/icon.svg" />
+
+</project>
