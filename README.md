@@ -1,5 +1,6 @@
+![ZERO ONE MAP EDITOR](/git_files/title.png?raw=true)
+
 # ZOME
-### ZERO ONE MAP EDITOR
 
 The Zero One Map Editor (ZOME) is a tilemap editor made to be quick, fast, and dirty. It lacks a ton of features, but it's easy to get up and running quickly, and it saves levels as easy-to-parse JSON files.
 
@@ -20,3 +21,5 @@ The Zero One Map Editor (ZOME) is a tilemap editor made to be quick, fast, and d
 - Click on tileset - choose tiles (click and drag to select multiple tiles)
 - Click on tilemap - paint selected tiles to map
 - Shift+Click on tilemap - paint random tile from selected tiles to map
+
+### [Get it on itch.io ->](https://01010111.itch.io/zome)
