@@ -1,0 +1,1 @@
+butler push release/windows/bin/ 01010111/zome:win
