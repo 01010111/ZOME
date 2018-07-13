@@ -360,8 +360,35 @@ class PlayState extends FlxState
 		var x = (x / tile_size.x).floor();
 		var y = (y / tile_size.y).floor();
 		if (x >= tilemap_width || y >= tilemap_height) return;
-		FlxG.keys.pressed.SHIFT ? paint_random(tilemap_array, i, x, y) : paint_to_array(tilemap_array, i, x, y);
+		if (FlxG.keys.pressed.ALT) fill(tilemap_array, i, x, y);
+		else FlxG.keys.pressed.SHIFT ? paint_random(tilemap_array, i, x, y) : paint_to_array(tilemap_array, i, x, y);
 		update_tilemap();
+	}
+
+	function fill(a:Array<Array<Int>>, b:Array<Array<Int>>, x:Int, y:Int)
+	{
+		var target_tile = a[y][x];
+		var queue = [{ x:x, y:y, tilex: 0, tiley:0 }];
+		var visited = [for (j in 0...a.length)[for (i in 0...a[0].length) 0]];
+		var add_to_queue = function (o:Dynamic)
+		{
+			if (visited[o.y][o.x] == 0)
+			{
+				queue.push(o);
+				visited[o.y][o.x] = 1;
+			}
+		}
+		while (queue.length > 0)
+		{
+			var ip = queue.shift();
+			if (ip.x < 0 || ip.y < 0 || ip.x >= a[0].length || ip.y >= a.length) continue;
+			a[ip.y][ip.x] = b[(ip.tiley % b.length).abs().floor()][(ip.tilex % b[0].length).abs().floor()];
+
+			if (ip.x - 1 >= 0			&& a[ip.y][ip.x - 1] == target_tile) add_to_queue({ x: ip.x - 1, y: ip.y, tilex: ip.tilex - 1, tiley: ip.tiley });
+			if (ip.x + 1 < a[0].length	&& a[ip.y][ip.x + 1] == target_tile) add_to_queue({ x: ip.x + 1, y: ip.y, tilex: ip.tilex + 1, tiley: ip.tiley });
+			if (ip.y - 1 >= 0			&& a[ip.y - 1][ip.x] == target_tile) add_to_queue({ x: ip.x, y: ip.y - 1, tilex: ip.tilex, tiley: ip.tiley - 1 });
+			if (ip.y + 1 < a.length		&& a[ip.y + 1][ip.x] == target_tile) add_to_queue({ x: ip.x, y: ip.y + 1, tilex: ip.tilex, tiley: ip.tiley + 1 });
+		}
 	}
 
 	function paint_random(array:Array<Array<Int>>, brush:Array<Array<Int>>, x:Int, y:Int) array[y][x] = brush[(Math.random() * brush.length).floor()][(Math.random() * brush[0].length).floor()];
