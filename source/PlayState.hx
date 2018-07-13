@@ -1,6 +1,5 @@
 package;
 
-import flixel.input.FlxPointer;
 import FileUtils;
 import flixel.text.FlxText;
 import flixel.FlxG;
@@ -96,6 +95,7 @@ class PlayState extends FlxState
 
 		grid = new FlxTilemap();
 		grid.setPosition(map_cam_size.x * 0.5, map_cam_size.y * 0.5);
+		grid.alpha = 0.5;
 		grid.cameras = [map_cam];
 		add(grid);
 
@@ -157,7 +157,7 @@ class PlayState extends FlxState
 		mouse_click_tileset();
 		mouse_click_tilemap();
 
-		map_cam.zoom = (FlxG.mouse.wheel * 0.1 + map_cam.zoom).max(min_zoom).min(max_zoom);
+		camera_zoom(FlxG.mouse.wheel * 0.1);
 		
 		set_info_text();
 
@@ -166,6 +166,7 @@ class PlayState extends FlxState
 		if (FlxG.keys.justPressed.A) push_left();
 		if (FlxG.keys.justPressed.D) push_right();
 		if (FlxG.keys.justPressed.Q) trim();
+		if (FlxG.keys.justPressed.G) swap_grid();
 		if (FlxG.keys.justPressed.UP) offset_current_tiles(-tileset_width_in_tiles);
 		if (FlxG.keys.justPressed.DOWN) offset_current_tiles(tileset_width_in_tiles);
 		if (FlxG.keys.justPressed.LEFT) offset_current_tiles(-1);
@@ -173,6 +174,20 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.T) load_tileset();
 		if (FlxG.keys.pressed.ALT && FlxG.keys.justPressed.R) FlxG.resetState();
+	}
+
+	function camera_zoom(delta:Float, to:Float = 0)
+	{
+		if (delta == 0 && to == 0) return;
+		map_cam.zoom = (FlxG.mouse.wheel * 0.1 + map_cam.zoom).max(min_zoom).min(max_zoom);
+	}
+
+	var grid_pos:Int = -1;
+	function swap_grid()
+	{
+		members.remove(grid);
+		grid_pos == -1 ? members.push(grid) : members.unshift(grid);
+		grid_pos *= -1;
 	}
 
 	function run_status_timer(dt:Float)
@@ -320,7 +335,14 @@ class PlayState extends FlxState
 	{
 		var m_p = FlxG.mouse.getPositionInCameraView(map_cam).addPoint(map_cam.scroll).addPoint(tilemap.offset);
 		if (FlxG.mouse.pressed && grid.overlapsPoint(m_p)) on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, current_tiles);
-		if (FlxG.mouse.pressedRight && grid.overlapsPoint(m_p)) on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, [[0]]);
+		if (FlxG.mouse.pressedRight && grid.overlapsPoint(m_p)) FlxG.keys.pressed.SHIFT ? eyedrop(m_p.x - grid.x, m_p.y - grid.y) : on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, [[0]]);
+	}
+
+	function eyedrop(x:Float, y:Float)
+	{
+		var x = (x / tile_size.x).floor();
+		var y = (y / tile_size.y).floor();
+		select_tiles([[tilemap.getTile(x, y)]]);
 	}
 
 	function get_mouse_tilemap_pos():FlxPoint
