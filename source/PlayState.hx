@@ -48,6 +48,7 @@ class PlayState extends FlxState
 	public var mouse_up_pt:IntPoint;
 	public var status_text:FlxText;
 	public var status_timer:Float = 0;
+	public var last_tile:IntPoint = { x: -1, y: -1 };
 
 	override public function create():Void
 	{
@@ -359,6 +360,8 @@ class PlayState extends FlxState
 	{
 		var x = (x / tile_size.x).floor();
 		var y = (y / tile_size.y).floor();
+		if (last_tile.x == x && last_tile.y == y) return;
+		last_tile = { x: x, y: y };
 		if (x >= tilemap_width || y >= tilemap_height) return;
 		if (FlxG.keys.pressed.ALT) fill(tilemap_array, i, x, y);
 		else FlxG.keys.pressed.SHIFT ? paint_random(tilemap_array, i, x, y) : paint_to_array(tilemap_array, i, x, y);
