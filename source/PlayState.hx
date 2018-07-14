@@ -49,6 +49,9 @@ class PlayState extends FlxState
 	public var status_text:FlxText;
 	public var status_timer:Float = 0;
 	public var last_tile:IntPoint = { x: -1, y: -1 };
+	public var history:Array<Array<Array<Int>>> = [];
+	public var update_history:Bool = true;
+	public var history_step = 0;
 
 	override public function create():Void
 	{
@@ -177,6 +180,44 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.T) load_tileset();
 		if (FlxG.keys.pressed.ALT && FlxG.keys.justPressed.R) FlxG.resetState();
+		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.Z) undo();
+	}
+
+	function undo()
+	{
+		if (FlxG.keys.pressed.SHIFT)
+		{
+			redo();
+			return;
+		}
+		if (history.length <= 1 || history_step <= 0) return;
+		history_step--;
+		tilemap_array = [];
+		for (j in 0...history[history_step].length)
+		{
+			tilemap_array.push([]);
+			for (i in 0...history[history_step][j].length)
+			{
+				tilemap_array[j][i] = history[history_step][j][i];
+			}
+		}
+		update_tilemap();
+	}
+
+	function redo()
+	{
+		if (history_step == history.length - 1) return;
+		history_step++;
+		tilemap_array = [];
+		for (j in 0...history[history_step].length)
+		{
+			tilemap_array.push([]);
+			for (i in 0...history[history_step][j].length)
+			{
+				tilemap_array[j][i] = history[history_step][j][i];
+			}
+		}
+		update_tilemap();
 	}
 
 	function camera_zoom(delta:Float, to:Float = 0)
@@ -337,8 +378,28 @@ class PlayState extends FlxState
 	function mouse_click_tilemap()
 	{
 		var m_p = FlxG.mouse.getPositionInCameraView(map_cam).addPoint(map_cam.scroll).addPoint(tilemap.offset);
-		if (FlxG.mouse.pressed && grid.overlapsPoint(m_p)) on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, current_tiles);
-		if (FlxG.mouse.pressedRight && grid.overlapsPoint(m_p)) FlxG.keys.pressed.SHIFT ? eyedrop(m_p.x - grid.x, m_p.y - grid.y) : on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, [[0]]);
+		if (FlxG.mouse.pressed)
+		{
+			if (grid.overlapsPoint(m_p))
+				on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, current_tiles);
+		}
+		else if (FlxG.mouse.pressedRight)
+		{
+			if (grid.overlapsPoint(m_p))
+				FlxG.keys.pressed.SHIFT 
+				? eyedrop(m_p.x - grid.x, m_p.y - grid.y)
+				: on_tilemap_click(m_p.x - grid.x, m_p.y - grid.y, [[0]]);
+		}
+		else if (update_history) save_to_history();
+	}
+
+	function save_to_history()
+	{
+		while (history.length - 1 > history_step) history.pop();
+		history.push([for (j in 0...tilemap_array.length) [for (i in 0...tilemap_array[j].length) tilemap_array[j][i]]]);
+		if (history.length > 100) history.shift();
+		update_history = false;
+		history_step = history.length - 1;
 	}
 
 	function eyedrop(x:Float, y:Float)
@@ -368,6 +429,7 @@ class PlayState extends FlxState
 		if (FlxG.keys.pressed.ALT) fill(tilemap_array, i, x, y);
 		else FlxG.keys.pressed.SHIFT ? paint_random(tilemap_array, i, x, y) : paint_to_array(tilemap_array, i, x, y);
 		update_tilemap();
+		update_history = true;
 	}
 
 	function fill(a:Array<Array<Int>>, b:Array<Array<Int>>, x:Int, y:Int)
