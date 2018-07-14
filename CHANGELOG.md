@@ -1,3 +1,8 @@
+# 0.2.1
+### Bugfixes
+- You can now alter the same tile more than one time in a row :)
+- Letterboxing is now black
+
 # 0.2.0
 ### New Features
 - **swap grid position** (above/below tilemap) by pressing **G**
