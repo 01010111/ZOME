@@ -150,6 +150,8 @@ class PlayState extends FlxState
 		load_text.visible = !tileset_loaded;
 		if (!tileset_loaded) return;
 
+		if (FlxG.mouse.justPressed) last_tile = { x: -1, y: -1 };
+
 		if (check_save()) return;
 		if (check_load()) return;
 		if (set_pan()) return;
