@@ -65,22 +65,22 @@ class PlayState extends FlxState
 	function init_cams()
 	{
 		map_cam_size = FlxPoint.get((FlxG.width * 0.75).round(), FlxG.height);
-		tileset_cam_size = FlxPoint.get((FlxG.width * 0.25).round(), (FlxG.height * 0.5).round());
-		object_palette_cam_size = FlxPoint.get((FlxG.width * 0.25).round(), (FlxG.height * 0.5).round());
+		tileset_cam_size = FlxPoint.get((FlxG.width * 0.25).round(), FlxG.height);
+		//object_palette_cam_size = FlxPoint.get((FlxG.width * 0.25).round(), (FlxG.height * 0.5).round());
 
 		map_cam = new FlxCamera(0, 0, map_cam_size.x.floor(), map_cam_size.y.floor());
 		tileset_cam = new FlxCamera(map_cam_size.x.floor(), 0, tileset_cam_size.x.floor(), tileset_cam_size.y.floor());
-		object_palette_cam = new FlxCamera(map_cam_size.x.floor(), tileset_cam_size.y.floor(), object_palette_cam_size.x.floor(), object_palette_cam_size.y.floor());
+		//object_palette_cam = new FlxCamera(map_cam_size.x.floor(), tileset_cam_size.y.floor(), object_palette_cam_size.x.floor(), object_palette_cam_size.y.floor());
 		ui_cam = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		
 		map_cam.bgColor = 0xFF363543;
 		tileset_cam.bgColor = 0xFF1E2028;
-		object_palette_cam.bgColor = 0xFF1E2028;
+		//object_palette_cam.bgColor = 0xFF1E2028;
 		ui_cam.bgColor = 0x00FFFFFF;
 
 		FlxG.cameras.add(map_cam);
 		FlxG.cameras.add(tileset_cam);
-		FlxG.cameras.add(object_palette_cam);
+		//FlxG.cameras.add(object_palette_cam);
 		FlxG.cameras.add(ui_cam);
 	}
 
