@@ -3,7 +3,7 @@
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="ZERO ONE MAP EDITOR" file="ZOME" main="Main" version="0.2.0" company="01010111" unless="debug" />
-	<app title="ZERO ONE MAP EDITOR" file="ZOME_DEBUG" main="Main" version="0.1.0" company="01010111" if="debug" />
+	<app title="ZERO ONE MAP EDITOR" file="ZOME_DEBUG" main="Main" version="0.2.0" company="01010111" if="debug" />
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
