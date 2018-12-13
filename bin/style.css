@@ -22,20 +22,20 @@ h1 {
 	font-family: Dosis;
 	font-size: 14px;
 	text-transform: uppercase;
-	font-weight: 600;
+	font-weight: 200;
 	line-height: 16px;
 }
 
 h2 {
 	font-family: OpenSans;
 	font-size: 12px;
-	font-weight: 600;
+	font-weight: 200;
 }
 
 p {
 	font-family: OpenSans;
 	font-size: 9px;
-	font-weight: 600;
+	font-weight: 200;
 }
 
 .container {
