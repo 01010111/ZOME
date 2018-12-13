@@ -1,0 +1,128 @@
+@font-face {
+	font-family: Dosis;
+	src: 'Dosis-SemiBold.ttf';
+}
+
+@font-face {
+	font-family: OpenSans;
+	src: 'OpenSans-SemiBold.ttf';
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #32343C;
+}
+
+h1 {
+	font-family: Dosis;
+	font-size: 14px;
+	text-transform: uppercase;
+	font-weight: 600;
+	line-height: 16px;
+}
+
+h2 {
+	font-family: OpenSans;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+p {
+	font-family: OpenSans;
+	font-size: 9px;
+	font-weight: 600;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.panel {
+	background-color: #5A5E6B;
+	border: 1px solid #32343C;
+	border-radius: 4px;
+	padding: 8px 16px;
+	min-height: 32px;
+	width: 100%;
+}
+
+.panel h1 {
+	color: #E0E2EB;
+}
+
+.panel h2 p {
+	color: #C1C5D2;
+}
+
+.flex1 {
+	flex: 1;
+}
+
+.main_area {
+	display: flex;
+	width: 100%;
+}
+
+.left_column {
+	display: flex;
+	flex-direction: column;
+	width: 256px;
+	min-height: 100%;
+	background-color: #32343C;
+}
+
+.right_column {
+	display: flex;
+	flex-direction: column;
+	width: 320px;
+	min-height: 100%;
+	background-color: #32343C;
+}
+
+.workspace {
+	flex: 1;
+	display: inline-block;
+	min-height: 100%;
+	background-color: #757989;
+	border: 1px solid #32343C;
+	border-radius: 4px;
+	padding: 8px 16px;
+}
+
+.header {
+	width: 100vw;
+}
+
+.footer {
+	width: 100vw;
+}
+
+.separator {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #32343C rgba(0, 0, 0, 0) #757989 rgba(0, 0, 0, 0);
+	min-width: 100%;
+	margin: 6px 0px 16px 0px;
+}
+
+.window {
+	background-color: #32343C;
+	border-radius: 2px;
+}
+
+.h224 {
+	min-height: 224px;
+	max-height: 224px;
+}
+
+.h320 {
+	min-height: 320px;
+	max-height: 320px;
+}

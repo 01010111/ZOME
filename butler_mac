@@ -1,1 +1,0 @@
-butler push release/macos/bin/ 01010111/zome:mac --userversion 0.3.0
