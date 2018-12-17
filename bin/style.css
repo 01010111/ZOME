@@ -1,11 +1,11 @@
 @font-face {
-	font-family: Dosis;
-	src: 'Dosis-SemiBold.ttf';
+	font-family: 'Dosis';
+	src: url('fonts/Dosis-SemiBold.ttf');
 }
 
 @font-face {
-	font-family: OpenSans;
-	src: 'OpenSans-SemiBold.ttf';
+	font-family: 'OpenSans';
+	src: url('fonts/OpenSans-SemiBold.ttf');
 }
 
 * {
@@ -114,7 +114,9 @@ p {
 
 .window {
 	background-color: #32343C;
-	border-radius: 2px;
+    border: 1px solid #32343C;
+    border-radius: 2px;
+	overflow-y: scroll;
 }
 
 .h224 {
@@ -125,4 +127,71 @@ p {
 .h320 {
 	min-height: 320px;
 	max-height: 320px;
+}
+
+.h_m80 {
+	min-height: calc(100% - 80px);
+	max-height: calc(100% - 80px);
+}
+
+.tool {
+	opacity: 0.5;
+	margin-right: 8px;
+}
+
+.tool:hover {
+	opacity: 0.75;
+}
+
+.tool.selected {
+	opacity: 1;
+}
+
+.add_btn {
+	opacity: 0.5;
+	float: right;
+	margin: -20px -8px 0 0;
+}
+
+.add_btn:hover {
+	opacity: 1;
+}
+
+.window_panel {
+    background-color: #757989;
+    border: 1px solid #32343C;
+    border-radius: 2px;
+}
+
+.layer_panel {
+	min-height: 32px;
+    padding: 6px;
+}
+
+.layer_icon {
+	float: left;
+    width: 16px;
+}
+
+.layer_name {
+	color: white;
+    margin: 2px 8px;
+    float: left;
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background-color: #32343C;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background-color: #757989;
+	border: 1px solid #32343C;
+	border-radius: 2px;
 }

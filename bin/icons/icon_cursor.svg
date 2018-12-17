@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Icon_Cursor</title>
+    
+    <defs></defs>
+    <g id="Icon_Cursor" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M13.2,16.3846154 L13.2,22.5384615 L10.8,22.5384615 L10.8,16.3846154 L6,16.3846154 L12,1 L18,16.3846154 L13.2,16.3846154 Z" id="Combined-Shape" fill="#FFFFFF" transform="translate(12.000000, 11.769231) rotate(-45.000000) translate(-12.000000, -11.769231) "></path>
+    </g>
+</svg>
