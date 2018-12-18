@@ -24,12 +24,14 @@ h1 {
 	text-transform: uppercase;
 	font-weight: 200;
 	line-height: 16px;
+	user-select: none;
 }
 
 h2 {
 	font-family: OpenSans;
 	font-size: 12px;
 	font-weight: 200;
+	user-select: none;
 }
 
 p {
@@ -98,6 +100,7 @@ p {
 
 .header {
 	width: 100vw;
+	-webkit-app-region: drag;
 }
 
 .footer {
@@ -116,16 +119,14 @@ p {
 	background-color: #32343C;
     border: 1px solid #32343C;
     border-radius: 2px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .h224 {
-	min-height: 224px;
 	max-height: 224px;
 }
 
 .h320 {
-	min-height: 320px;
 	max-height: 320px;
 }
 
@@ -157,10 +158,25 @@ p {
 	opacity: 1;
 }
 
+.delete_btn {
+	opacity: 0.5;
+    float: left;
+    margin-top: 10px;
+}
+
+.delete_btn:hover {
+	opacity: 1;
+}
+
 .window_panel {
+	user-select: none;
     background-color: #757989;
     border: 1px solid #32343C;
     border-radius: 2px;
+}
+
+.window_panel.selected {
+	background-color: #C1C5D2;
 }
 
 .layer_panel {
@@ -179,6 +195,20 @@ p {
     float: left;
 }
 
+.level_panel {
+	min-height: 24px;
+    padding: 4px 12px;
+}
+
+.level_name {
+	color: white;
+    float: left;
+}
+
+.levels {
+	max-height: calc(100vh - 384px);
+}
+
 /* width */
 ::-webkit-scrollbar {
 	width: 10px;
@@ -194,4 +224,8 @@ p {
 	background-color: #757989;
 	border: 1px solid #32343C;
 	border-radius: 2px;
+}
+
+::-webkit-scrollbar-corner {
+	background-color: #32343C;
 }

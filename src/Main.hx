@@ -5,8 +5,6 @@ import electron.main.BrowserWindow;
 class Main 
 {
 
-	static var window : BrowserWindow;
-
 	static function main()
 	{
 		electron.CrashReporter.start({
@@ -19,7 +17,7 @@ class Main
 
 	static function createWindow()
 	{
-		window = new BrowserWindow( { width: 1280, height: 800 } );
+		var window = new BrowserWindow( { width: 1280, height: 800, minWidth: 800, minHeight: 600 } );
 		window.on(closed, () -> {
 			window = null;
 			App.quit();

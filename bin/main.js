@@ -9,13 +9,13 @@ Main.main = function() {
 	});
 };
 Main.createWindow = function() {
-	Main.window = new electron_main_BrowserWindow({ width : 1280, height : 800});
-	Main.window.on("closed",function() {
-		Main.window = null;
+	var $window = new electron_main_BrowserWindow({ width : 1280, height : 800, minWidth : 800, minHeight : 600});
+	$window.on("closed",function() {
+		$window = null;
 		electron_main_App.quit();
 		return;
 	});
-	Main.window.loadFile("app.html");
+	$window.loadFile("app.html");
 };
 var electron_CrashReporter = require("electron").crashReporter;
 var electron_main_App = require("electron").app;
