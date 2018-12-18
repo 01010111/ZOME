@@ -1,6 +1,6 @@
 -lib electron
 -cp src
--dce full
+-dce no
 -debug
 --each
 

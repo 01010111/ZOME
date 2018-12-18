@@ -1,25 +1,6 @@
-import haxe.Json;
-
-class JsonData
+interface IHasContext
 {
-
-	public static var project_data:ProjectData = {
-		name: 'Unknown',
-		levels: [],
-	}
-
-	public static function save()
-	{
-		var json:String = Json.stringify(project_data);
-		trace(json);
-	}
-
-	public static function load(data:String)
-	{
-		var temp_data:ProjectData = Json.parse(data);
-		project_data = temp_data;
-	}
-
+	public function set_context(context:EContext):Void;
 }
 
 typedef ProjectData =
@@ -63,4 +44,12 @@ enum EContext
 {
 	TILE;
 	ENTITY;
+}
+
+enum ETool
+{
+	CURSOR;
+	PENCIL;
+	ERASER;
+	BUCKET;
 }

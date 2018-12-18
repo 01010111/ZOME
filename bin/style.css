@@ -177,6 +177,7 @@ p {
 
 .window_panel.selected {
 	background-color: #C1C5D2;
+	transition: 200ms;
 }
 
 .layer_panel {
