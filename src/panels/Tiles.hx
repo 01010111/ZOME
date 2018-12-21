@@ -9,6 +9,7 @@ class Tiles implements IHasContext
 {
 
 	var element:Element;
+	var window:Element;
 
 	public function new()
 	{
@@ -18,6 +19,7 @@ class Tiles implements IHasContext
 	function init()
 	{
 		element = document.getElementById('tiles');
+		window = document.getElementById('tile_selection_window');
 	}
 
 	public function set_context(context:EContext)

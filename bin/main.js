@@ -238,6 +238,7 @@ Main.main = function() {
 		Main.createWindow();
 		return;
 	});
+	electron_main_App.disableHardwareAcceleration();
 };
 Main.createWindow = function() {
 	var $window = new electron_main_BrowserWindow({ width : 1280, height : 800, minWidth : 800, minHeight : 600});

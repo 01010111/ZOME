@@ -13,6 +13,7 @@ class Main
 		});
 
 		App.on(ready, (e) -> createWindow());
+		App.disableHardwareAcceleration();
 	}
 
 	static function createWindow()

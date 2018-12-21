@@ -13,22 +13,24 @@
 			</div>
 			<div class='main_area flex1'>
 				<div class='left_column'>
-					<div class='panel flex1 h320' id='layers'>
+					<div class='panel flex1' id='layers'>
 						<h1>layers</h1>
-						<img src='icons/icon_add.svg' id='add_layer' class='add_btn'></img>
+						<img src='icons/icon_add.svg' id='add_layer_btn' class='btn btn_tr'></img>
 						<div class='separator'></div>
 						<div class='window h_m80'></div>
-						<img src='icons/icon_delete.svg' id='delete_layer' class='delete_btn'></img>
+						<img src='icons/icon_delete.svg' id='delete_layer_btn' class='btn btn_bl'></img>
 					</div>
-					<div class='panel flex1 levels' id='levels'>
+					<div class='panel flex1' id='levels'>
 						<h1>levels</h1>
-						<img src='icons/icon_add.svg' id='add_level' class='add_btn'></img>
+						<img src='icons/icon_add.svg' id='add_level_btn' class='btn btn_tr'></img>
 						<div class='separator'></div>
 						<div class='window h_m80'></div>
-						<img src='icons/icon_delete.svg' id='delete_level' class='delete_btn'></img>
+						<img src='icons/icon_delete.svg' id='delete_level_btn' class='btn btn_bl'></img>
 					</div>
 				</div>
-				<div class='workspace'></div>
+				<div class='workspace' id='workspace'>
+					<div class='workspace_tile_container' id='tile_container'></div>
+				</div>
 				<div class='right_column'>
 					<div class='panel' id='tools'>
 						<img src='icons/icon_cursor.svg' id='icon_cursor' class='tool'></img>
@@ -38,7 +40,13 @@
 					</div>
 					<div class='panel flex1' id='tiles'>
 						<h1>tiles</h1>
+						<img src='icons/icon_add.svg' id='add_tileset_btn' class='btn btn_tr'></img>
 						<div class='separator'></div>
+						<form>
+							<select id='tileset_select' class='full_width'></select>
+						</form>
+						<div style='height: 16px'></div>
+						<div class='window' id='tile_selection_window'></div>
 					</div>
 					<div class='panel flex1' id='entities'>
 						<h1>entities</h1>
@@ -54,5 +62,9 @@
 				<div class='panel'></div>
 			</div>
 		</div>
+		<div class='modal' id='add_layer_modal'></div>
+		<div class='modal' id='add_level_modal'></div>
+		<div class='modal' id='delete_layer_modal'></div>
+		<div class='modal' id='delete_level_modal'></div>
     </body>
 </html>

@@ -1,5 +1,6 @@
 package panels;
 
+import js.Browser;
 import Defs.EContext;
 import js.html.ImageElement;
 import js.html.ParagraphElement;
@@ -15,7 +16,6 @@ class Layers
 	var window:Element;
 	
 	var current_layer:Layer;
-	var layers:Array<Layer> = [];
 
 	var add_btn:Element;
 	var delete_btn:Element;
@@ -29,36 +29,25 @@ class Layers
 	{
 		element = document.getElementById('layers');
 		window = element.getElementsByClassName('window')[0];
-		add_btn = document.getElementById('add_layer');
-		delete_btn = document.getElementById('delete_layer');
+		add_btn = document.getElementById('add_layer_btn');
+		delete_btn = document.getElementById('delete_layer_btn');
 		add_btn.onclick = (e) -> invoke_add_layer_modal();
 		delete_btn.onclick = (e) -> invoke_delete_layer_modal(current_layer);
 	}
 
 	function invoke_add_layer_modal()
 	{
-		/* Waiting on https://github.com/tong/hxelectron/issues/42
-		var add_layer_window = new BrowserWindow( { width: 400, height: 400 } );
-		add_layer_window.on(closed, () -> add_layer_window = null);
-		add_layer_window.loadFile('add_layer.html');
-		*/
+		App.i.add_layer_modal.open();
 	}
 
 	function invoke_delete_layer_modal(layer:Layer)
 	{
-		/* Waiting on https://github.com/tong/hxelectron/issues/42 */
+		if (App.i.levels.current_level.layers.length <= 1) return;
+		App.i.delete_layer_modal.layer = layer;
+		App.i.delete_layer_modal.open();
 	}
 
-	public function add_layer(name:String, context:EContext)
-	{
-		var layer = new Layer(context, name);
-		layer.element.onclick = (e) -> select_layer(layer);
-		window.appendChild(layer.element);
-		if (current_layer == null) select_layer(layer);
-		layers.push(layer);
-	}
-
-	function select_layer(layer:Layer)
+	public function select_layer(layer:Layer)
 	{
 		if (current_layer != null) current_layer.deselect();
 		current_layer = layer;
@@ -66,14 +55,30 @@ class Layers
 		App.i.set_context(layer.context);
 	}
 
-	function delete_layer(layer:Layer)
+	public function add_layer(name:String, context:EContext)
 	{
-		if (layers.length <= 1) return;
-		var idx = layers.indexOf(layer);
+		var layer = new Layer(context, name);
+		layer.element.onclick = (e) -> select_layer(layer);
+		if (current_layer == null) App.i.levels.current_level.layers.unshift(layer);
+		else App.i.levels.current_level.layers.insert(App.i.levels.current_level.layers.indexOf(current_layer), layer);
+		rebuild_layers();
+		select_layer(layer);
+	}
+
+	public function delete_layer(layer:Layer)
+	{
+		if (App.i.levels.current_level.layers.length <= 1) return;
+		var idx = App.i.levels.current_level.layers.indexOf(layer);
 		window.removeChild(layer.element);
-		layers.remove(layer);
+		App.i.levels.current_level.layers.remove(layer);
 		if (current_layer != layer) return;
-		select_layer(layers[idx.min(layers.length - 1).floor()]);
+		select_layer(App.i.levels.current_level.layers[idx.min(App.i.levels.current_level.layers.length - 1).floor()]);
+	}
+
+	public function rebuild_layers()
+	{
+		while (window.lastChild != null) window.removeChild(window.lastChild);
+		for (layer in App.i.levels.current_level.layers) window.appendChild(layer.element);
 	}
 
 }
@@ -83,8 +88,8 @@ class Layer
 
 	public var element:Element;
 	public var context:EContext;
+	public var name:String;
 
-	var name:String;
 	var visible:Bool = true;
 
 	var text:ParagraphElement;

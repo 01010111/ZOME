@@ -1,6 +1,15 @@
+import js.html.Element;
+
 interface IHasContext
 {
 	public function set_context(context:EContext):Void;
+}
+
+interface IModal
+{
+	public var element:Element;
+	public function open():Void;
+	public function close():Void;
 }
 
 typedef ProjectData =

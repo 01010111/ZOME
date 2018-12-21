@@ -16,11 +16,9 @@ IHasContext.prototype = {
 var App = function() {
 	App.i = this;
 	this.init_panels();
-	this.layers.add_layer("Tile Layer FG",EContext.TILE);
-	this.layers.add_layer("Entity Layer",EContext.ENTITY);
-	this.layers.add_layer("Tile Layer BG",EContext.TILE);
-	this.levels.add_level("Level 01");
-	this.levels.add_level("Level 02");
+	this.init_modals();
+	this.levels.add_level("Level");
+	this.workspace.rebuild(512,288,16,16);
 };
 $hxClasses["App"] = App;
 App.__name__ = "App";
@@ -36,6 +34,11 @@ App.prototype = {
 	,tiles: null
 	,entities: null
 	,inspector: null
+	,workspace: null
+	,add_layer_modal: null
+	,add_level_modal: null
+	,delete_layer_modal: null
+	,delete_level_modal: null
 	,tool: null
 	,context: null
 	,init_panels: function() {
@@ -45,6 +48,13 @@ App.prototype = {
 		this.tiles = new panels_Tiles();
 		this.entities = new panels_Entities();
 		this.inspector = new panels_Inspector();
+		this.workspace = new panels_Workspace();
+	}
+	,init_modals: function() {
+		this.add_layer_modal = new modals_AddLayer();
+		this.add_level_modal = new modals_AddLevel();
+		this.delete_layer_modal = new modals_DeleteLayer();
+		this.delete_level_modal = new modals_DeleteLevel();
 	}
 	,set_context: function(context) {
 		this.context = context;
@@ -54,6 +64,15 @@ App.prototype = {
 		this.inspector.set_context(context);
 	}
 	,__class__: App
+};
+var IModal = function() { };
+$hxClasses["IModal"] = IModal;
+IModal.__name__ = "IModal";
+IModal.prototype = {
+	element: null
+	,open: null
+	,close: null
+	,__class__: IModal
 };
 var EContext = $hxEnums["EContext"] = { __ename__ : "EContext", __constructs__ : ["TILE","ENTITY"]
 	,TILE: {_hx_index:0,__enum__:"EContext",toString:$estr}
@@ -588,6 +607,32 @@ haxe__$DynamicAccess_DynamicAccess_$Impl_$.keys = function(this1) {
 haxe__$DynamicAccess_DynamicAccess_$Impl_$.copy = function(this1) {
 	return Reflect.copy(this1);
 };
+var haxe_Log = function() { };
+$hxClasses["haxe.Log"] = haxe_Log;
+haxe_Log.__name__ = "haxe.Log";
+haxe_Log.formatOutput = function(v,infos) {
+	var str = Std.string(v);
+	if(infos == null) {
+		return str;
+	}
+	var pstr = infos.fileName + ":" + infos.lineNumber;
+	if(infos != null && infos.customParams != null) {
+		var _g = 0;
+		var _g1 = infos.customParams;
+		while(_g < _g1.length) {
+			var v1 = _g1[_g];
+			++_g;
+			str += ", " + Std.string(v1);
+		}
+	}
+	return pstr + ": " + str;
+};
+haxe_Log.trace = function(v,infos) {
+	var str = haxe_Log.formatOutput(v,infos);
+	if(typeof(console) != "undefined" && console.log != null) {
+		console.log(str);
+	}
+};
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
 	this.val = val;
@@ -905,6 +950,291 @@ js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
 	}
 	return null;
 };
+var modals_AddLayer = function() {
+	this.init();
+};
+$hxClasses["modals.AddLayer"] = modals_AddLayer;
+modals_AddLayer.__name__ = "modals.AddLayer";
+modals_AddLayer.__interfaces__ = [IModal];
+modals_AddLayer.prototype = {
+	element: null
+	,context: null
+	,name: null
+	,button: null
+	,init: function() {
+		var _gthis = this;
+		this.element = window.document.getElementById("add_layer_modal");
+		var body = window.document.createElement("div");
+		body.classList.add("modal_content");
+		body.classList.add("panel");
+		body.style.width = "300px";
+		body.style.height = "256px";
+		this.context = window.document.createElement("select");
+		this.context.options.add(util_Factory.make_option("TILE","Tiles"));
+		this.context.options.add(util_Factory.make_option("ENTITY","Entities"));
+		this.context.classList.add("full_width");
+		this.name = window.document.createElement("input");
+		this.name.classList.add("full_width");
+		this.name.placeholder = "Layer Name";
+		this.name.oninput = function(e) {
+			return _gthis.button.disabled = _gthis.name.value.length == 0;
+		};
+		this.name.onkeydown = function(e1) {
+			if(_gthis.name.value.length > 0 && e1.keyCode == 13) {
+				_gthis.button.onclick();
+			}
+			return;
+		};
+		this.button = window.document.createElement("button");
+		this.button.innerHTML = "Add Layer";
+		this.button.classList.add("full_width");
+		this.button.disabled = true;
+		this.button.onclick = function(e2) {
+			App.i.layers.add_layer(_gthis.name.value,_gthis.get_context_enum(_gthis.context.value));
+			_gthis.reset();
+			_gthis.close();
+			return;
+		};
+		var cancel_btn = window.document.createElement("button");
+		cancel_btn.innerHTML = "Cancel";
+		cancel_btn.classList.add("full_width");
+		cancel_btn.classList.add("red");
+		cancel_btn.onclick = function(e3) {
+			_gthis.reset();
+			_gthis.close();
+			return;
+		};
+		this.element.appendChild(body);
+		body.appendChild(util_Factory.make_h1("New Layer"));
+		body.appendChild(util_Factory.make_separator());
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(this.context);
+		body.appendChild(util_Factory.make_spacer(16));
+		body.appendChild(this.name);
+		body.appendChild(util_Factory.make_spacer(16));
+		body.appendChild(this.button);
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(cancel_btn);
+		this.close();
+	}
+	,get_context_enum: function(value) {
+		switch(value) {
+		case "ENTITY":
+			return EContext.ENTITY;
+		case "TILE":
+			return EContext.TILE;
+		default:
+			return EContext.TILE;
+		}
+	}
+	,reset: function() {
+		this.context.selectedIndex = 0;
+		this.name.value = "";
+		this.button.disabled = true;
+	}
+	,open: function() {
+		this.element.style.display = "block";
+	}
+	,close: function() {
+		this.element.style.display = "none";
+	}
+	,__class__: modals_AddLayer
+};
+var modals_AddLevel = function() {
+	this.init();
+};
+$hxClasses["modals.AddLevel"] = modals_AddLevel;
+modals_AddLevel.__name__ = "modals.AddLevel";
+modals_AddLevel.__interfaces__ = [IModal];
+modals_AddLevel.prototype = {
+	element: null
+	,name: null
+	,button: null
+	,init: function() {
+		var _gthis = this;
+		this.element = window.document.getElementById("add_level_modal");
+		var body = window.document.createElement("div");
+		body.classList.add("modal_content");
+		body.classList.add("panel");
+		body.style.width = "300px";
+		body.style.height = "224px";
+		this.name = window.document.createElement("input");
+		this.name.classList.add("full_width");
+		this.name.placeholder = "Level Name";
+		this.name.oninput = function(e) {
+			return _gthis.button.disabled = _gthis.name.value.length == 0;
+		};
+		this.name.onkeydown = function(e1) {
+			if(_gthis.name.value.length > 0 && e1.keyCode == 13) {
+				_gthis.button.onclick();
+			}
+			return;
+		};
+		this.button = window.document.createElement("button");
+		this.button.innerHTML = "Add Level";
+		this.button.classList.add("full_width");
+		this.button.disabled = true;
+		this.button.onclick = function(e2) {
+			App.i.levels.add_level(_gthis.name.value);
+			_gthis.reset();
+			_gthis.close();
+			return;
+		};
+		var cancel_btn = window.document.createElement("button");
+		cancel_btn.innerHTML = "Cancel";
+		cancel_btn.classList.add("full_width");
+		cancel_btn.classList.add("red");
+		cancel_btn.onclick = function(e3) {
+			_gthis.reset();
+			_gthis.close();
+			return;
+		};
+		this.element.appendChild(body);
+		body.appendChild(util_Factory.make_h1("New Level"));
+		body.appendChild(util_Factory.make_separator());
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(this.name);
+		body.appendChild(util_Factory.make_spacer(16));
+		body.appendChild(this.button);
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(cancel_btn);
+		this.close();
+	}
+	,get_context_enum: function(value) {
+		switch(value) {
+		case "ENTITY":
+			return EContext.ENTITY;
+		case "TILE":
+			return EContext.TILE;
+		default:
+			return EContext.TILE;
+		}
+	}
+	,reset: function() {
+		this.name.value = "";
+		this.button.disabled = true;
+	}
+	,open: function() {
+		this.element.style.display = "block";
+	}
+	,close: function() {
+		this.element.style.display = "none";
+	}
+	,__class__: modals_AddLevel
+};
+var modals_DeleteLayer = function() {
+	this.init();
+};
+$hxClasses["modals.DeleteLayer"] = modals_DeleteLayer;
+modals_DeleteLayer.__name__ = "modals.DeleteLayer";
+modals_DeleteLayer.__interfaces__ = [IModal];
+modals_DeleteLayer.prototype = {
+	element: null
+	,text: null
+	,button: null
+	,layer: null
+	,init: function() {
+		var _gthis = this;
+		this.element = window.document.getElementById("delete_layer_modal");
+		var body = window.document.createElement("div");
+		body.classList.add("modal_content");
+		body.classList.add("panel");
+		body.style.width = "300px";
+		body.style.height = "200px";
+		this.text = window.document.createElement("p");
+		this.button = window.document.createElement("button");
+		this.button.innerHTML = "YES";
+		this.button.classList.add("full_width");
+		this.button.classList.add("red");
+		this.button.onclick = function(e) {
+			App.i.layers.delete_layer(_gthis.layer);
+			_gthis.close();
+			return;
+		};
+		var cancel_btn = window.document.createElement("button");
+		cancel_btn.innerHTML = "Cancel";
+		cancel_btn.classList.add("full_width");
+		cancel_btn.onclick = function(e1) {
+			_gthis.close();
+			return;
+		};
+		this.element.appendChild(body);
+		body.appendChild(util_Factory.make_h1("Delete Layer"));
+		body.appendChild(util_Factory.make_separator());
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(this.text);
+		body.appendChild(util_Factory.make_spacer(16));
+		body.appendChild(this.button);
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(cancel_btn);
+		this.close();
+	}
+	,open: function() {
+		var e = this.layer.context;
+		this.text.innerHTML = "Are you sure you want to delete the " + $hxEnums[e.__enum__].__constructs__[e._hx_index].toLowerCase() + " layer \"" + this.layer.name + "\"? Its contents will be lost forever!";
+		this.element.style.display = "block";
+	}
+	,close: function() {
+		this.element.style.display = "none";
+	}
+	,__class__: modals_DeleteLayer
+};
+var modals_DeleteLevel = function() {
+	this.init();
+};
+$hxClasses["modals.DeleteLevel"] = modals_DeleteLevel;
+modals_DeleteLevel.__name__ = "modals.DeleteLevel";
+modals_DeleteLevel.__interfaces__ = [IModal];
+modals_DeleteLevel.prototype = {
+	element: null
+	,text: null
+	,button: null
+	,level: null
+	,init: function() {
+		var _gthis = this;
+		this.element = window.document.getElementById("delete_level_modal");
+		var body = window.document.createElement("div");
+		body.classList.add("modal_content");
+		body.classList.add("panel");
+		body.style.width = "300px";
+		body.style.height = "200px";
+		this.text = window.document.createElement("p");
+		this.button = window.document.createElement("button");
+		this.button.innerHTML = "YES";
+		this.button.classList.add("full_width");
+		this.button.classList.add("red");
+		this.button.onclick = function(e) {
+			App.i.levels.delete_level(_gthis.level);
+			_gthis.close();
+			return;
+		};
+		var cancel_btn = window.document.createElement("button");
+		cancel_btn.innerHTML = "Cancel";
+		cancel_btn.classList.add("full_width");
+		cancel_btn.onclick = function(e1) {
+			_gthis.close();
+			return;
+		};
+		this.element.appendChild(body);
+		body.appendChild(util_Factory.make_h1("Delete Layer"));
+		body.appendChild(util_Factory.make_separator());
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(this.text);
+		body.appendChild(util_Factory.make_spacer(16));
+		body.appendChild(this.button);
+		body.appendChild(util_Factory.make_spacer(8));
+		body.appendChild(cancel_btn);
+		this.close();
+	}
+	,open: function() {
+		this.text.innerHTML = "Are you sure you want to delete the level \"" + this.level.name + "\"? Its contents will be lost forever!";
+		this.element.style.display = "block";
+	}
+	,close: function() {
+		this.element.style.display = "none";
+	}
+	,__class__: modals_DeleteLevel
+};
 var panels_Entities = function() {
 	this.init();
 };
@@ -944,7 +1274,6 @@ panels_Inspector.prototype = {
 	,__class__: panels_Inspector
 };
 var panels_Layers = function() {
-	this.layers = [];
 	this.init();
 };
 $hxClasses["panels.Layers"] = panels_Layers;
@@ -953,15 +1282,14 @@ panels_Layers.prototype = {
 	element: null
 	,window: null
 	,current_layer: null
-	,layers: null
 	,add_btn: null
 	,delete_btn: null
 	,init: function() {
 		var _gthis = this;
 		this.element = window.document.getElementById("layers");
 		this.window = this.element.getElementsByClassName("window")[0];
-		this.add_btn = window.document.getElementById("add_layer");
-		this.delete_btn = window.document.getElementById("delete_layer");
+		this.add_btn = window.document.getElementById("add_layer_btn");
+		this.delete_btn = window.document.getElementById("delete_layer_btn");
 		this.add_btn.onclick = function(e) {
 			_gthis.invoke_add_layer_modal();
 			return;
@@ -972,21 +1300,14 @@ panels_Layers.prototype = {
 		};
 	}
 	,invoke_add_layer_modal: function() {
+		App.i.add_layer_modal.open();
 	}
 	,invoke_delete_layer_modal: function(layer) {
-	}
-	,add_layer: function(name,context) {
-		var _gthis = this;
-		var layer = new panels_Layer(context,name);
-		layer.element.onclick = function(e) {
-			_gthis.select_layer(layer);
+		if(App.i.levels.current_level.layers.length <= 1) {
 			return;
-		};
-		this.window.appendChild(layer.element);
-		if(this.current_layer == null) {
-			this.select_layer(layer);
 		}
-		this.layers.push(layer);
+		App.i.delete_layer_modal.layer = layer;
+		App.i.delete_layer_modal.open();
 	}
 	,select_layer: function(layer) {
 		if(this.current_layer != null) {
@@ -996,17 +1317,42 @@ panels_Layers.prototype = {
 		this.current_layer.select();
 		App.i.set_context(layer.context);
 	}
+	,add_layer: function(name,context) {
+		var _gthis = this;
+		var layer = new panels_Layer(context,name);
+		layer.element.onclick = function(e) {
+			_gthis.select_layer(layer);
+			return;
+		};
+		if(this.current_layer == null) {
+			App.i.levels.current_level.layers.unshift(layer);
+		} else {
+			App.i.levels.current_level.layers.splice(App.i.levels.current_level.layers.indexOf(this.current_layer),0,layer);
+		}
+		this.rebuild_layers();
+		this.select_layer(layer);
+	}
 	,delete_layer: function(layer) {
-		if(this.layers.length <= 1) {
+		if(App.i.levels.current_level.layers.length <= 1) {
 			return;
 		}
-		var idx = this.layers.indexOf(layer);
+		var idx = App.i.levels.current_level.layers.indexOf(layer);
 		this.window.removeChild(layer.element);
-		HxOverrides.remove(this.layers,layer);
+		HxOverrides.remove(App.i.levels.current_level.layers,layer);
 		if(this.current_layer != layer) {
 			return;
 		}
-		this.select_layer(this.layers[Math.floor(Math.min(idx,this.layers.length - 1))]);
+		this.select_layer(App.i.levels.current_level.layers[Math.floor(Math.min(idx,App.i.levels.current_level.layers.length - 1))]);
+	}
+	,rebuild_layers: function() {
+		while(this.window.lastChild != null) this.window.removeChild(this.window.lastChild);
+		var _g = 0;
+		var _g1 = App.i.levels.current_level.layers;
+		while(_g < _g1.length) {
+			var layer = _g1[_g];
+			++_g;
+			this.window.appendChild(layer.element);
+		}
 	}
 	,__class__: panels_Layers
 };
@@ -1079,8 +1425,8 @@ panels_Levels.prototype = {
 		var _gthis = this;
 		this.element = window.document.getElementById("levels");
 		this.window = this.element.getElementsByClassName("window")[0];
-		this.add_btn = window.document.getElementById("add_level");
-		this.delete_btn = window.document.getElementById("delete_level");
+		this.add_btn = window.document.getElementById("add_level_btn");
+		this.delete_btn = window.document.getElementById("delete_level_btn");
 		this.add_btn.onclick = function(e) {
 			_gthis.invoke_add_level_modal();
 			return;
@@ -1091,8 +1437,29 @@ panels_Levels.prototype = {
 		};
 	}
 	,invoke_add_level_modal: function() {
+		App.i.add_level_modal.open();
 	}
 	,invoke_delete_level_modal: function(level) {
+		if(this.levels.length <= 1) {
+			return;
+		}
+		App.i.delete_level_modal.level = level;
+		App.i.delete_level_modal.open();
+	}
+	,select_level: function(level,rebuild) {
+		if(rebuild == null) {
+			rebuild = true;
+		}
+		if(this.current_level != null) {
+			this.current_level.deselect();
+		}
+		this.current_level = level;
+		this.current_level.select();
+		if(!rebuild) {
+			return;
+		}
+		App.i.layers.rebuild_layers();
+		App.i.layers.select_layer(this.current_level.layers[0]);
 	}
 	,add_level: function(name) {
 		var _gthis = this;
@@ -1101,18 +1468,15 @@ panels_Levels.prototype = {
 			_gthis.select_level(level);
 			return;
 		};
-		this.window.appendChild(level.element);
 		if(this.current_level == null) {
-			this.select_level(level);
+			this.levels.unshift(level);
+		} else {
+			this.levels.splice(this.levels.indexOf(this.current_level) + 1,0,level);
 		}
-		this.levels.push(level);
-	}
-	,select_level: function(level) {
-		if(this.current_level != null) {
-			this.current_level.deselect();
-		}
-		this.current_level = level;
-		this.current_level.select();
+		this.rebuild_levels();
+		this.select_level(level,false);
+		App.i.layers.add_layer("Tiles",EContext.TILE);
+		App.i.layers.rebuild_layers();
 	}
 	,delete_level: function(level) {
 		if(this.levels.length <= 1) {
@@ -1126,9 +1490,20 @@ panels_Levels.prototype = {
 		}
 		this.select_level(this.levels[Math.floor(Math.min(idx,this.levels.length - 1))]);
 	}
+	,rebuild_levels: function() {
+		while(this.window.lastChild != null) this.window.removeChild(this.window.lastChild);
+		var _g = 0;
+		var _g1 = this.levels;
+		while(_g < _g1.length) {
+			var level = _g1[_g];
+			++_g;
+			this.window.appendChild(level.element);
+		}
+	}
 	,__class__: panels_Levels
 };
 var panels_Level = function(name) {
+	this.layers = [];
 	this.name = name;
 	this.create_element();
 	this.create_text();
@@ -1138,6 +1513,7 @@ panels_Level.__name__ = "panels.Level";
 panels_Level.prototype = {
 	element: null
 	,name: null
+	,layers: null
 	,text: null
 	,create_element: function() {
 		this.element = window.document.createElement("div");
@@ -1166,8 +1542,10 @@ panels_Tiles.__name__ = "panels.Tiles";
 panels_Tiles.__interfaces__ = [IHasContext];
 panels_Tiles.prototype = {
 	element: null
+	,window: null
 	,init: function() {
 		this.element = window.document.getElementById("tiles");
+		this.window = window.document.getElementById("tile_selection_window");
 	}
 	,set_context: function(context) {
 		switch(context._hx_index) {
@@ -1270,6 +1648,94 @@ panels_Tools.prototype = {
 		}
 	}
 	,__class__: panels_Tools
+};
+var panels_Workspace = function() {
+	this.init();
+};
+$hxClasses["panels.Workspace"] = panels_Workspace;
+panels_Workspace.__name__ = "panels.Workspace";
+panels_Workspace.prototype = {
+	element: null
+	,tile_container: null
+	,init: function() {
+		this.element = window.document.getElementById("workspace");
+		this.tile_container = window.document.getElementById("tile_container");
+	}
+	,rebuild: function(width,height,tile_width,tile_height) {
+		this.reset();
+		width = Math.floor(width / tile_width) * tile_width;
+		height = Math.floor(height / tile_height) * tile_height;
+		this.tile_container.style.minWidth = "" + width + "px";
+		this.tile_container.style.minHeight = "" + height + "px";
+		this.tile_container.style.maxWidth = "" + width + "px";
+		this.tile_container.style.maxHeight = "" + height + "px";
+		var _g = 0;
+		var _g1 = Math.ceil(height / tile_height);
+		while(_g < _g1) {
+			var j = [_g++];
+			var row = util_Factory.make_div(["workspace_row"]);
+			var _g2 = 0;
+			var _g11 = Math.ceil(width / tile_width);
+			while(_g2 < _g11) {
+				var i = [_g2++];
+				var cell = util_Factory.make_div(["workspace_tile"]);
+				cell.style.width = "" + tile_width + "px";
+				cell.style.height = "" + tile_height + "px";
+				cell.onclick = (function(i1,j1) {
+					return function(e) {
+						haxe_Log.trace(i1[0],{ fileName : "src/panels/Workspace.hx", lineNumber : 46, className : "panels.Workspace", methodName : "rebuild", customParams : [j1[0]]});
+						return;
+					};
+				})(i,j);
+				row.appendChild(cell);
+			}
+			this.tile_container.appendChild(row);
+		}
+	}
+	,reset: function() {
+		while(this.tile_container.lastChild != null) {
+			while(this.tile_container.lastChild.lastChild != null) this.tile_container.lastChild.removeChild(this.tile_container.lastChild.lastChild);
+			this.tile_container.removeChild(this.tile_container.lastChild);
+		}
+	}
+	,__class__: panels_Workspace
+};
+var util_Factory = function() { };
+$hxClasses["util.Factory"] = util_Factory;
+util_Factory.__name__ = "util.Factory";
+util_Factory.make_option = function(value,text) {
+	var option = window.document.createElement("option");
+	option.value = value;
+	option.innerHTML = text;
+	return option;
+};
+util_Factory.make_h1 = function(text) {
+	var h1 = window.document.createElement("h1");
+	h1.innerText = text;
+	return h1;
+};
+util_Factory.make_spacer = function(size) {
+	var spacer = window.document.createElement("div");
+	spacer.style.minHeight = "" + size + "px";
+	return spacer;
+};
+util_Factory.make_separator = function() {
+	var separator = window.document.createElement("div");
+	separator.classList.add("separator");
+	return separator;
+};
+util_Factory.make_div = function(classes) {
+	if(classes == null) {
+		classes = [];
+	}
+	var div = window.document.createElement("div");
+	var _g = 0;
+	while(_g < classes.length) {
+		var c = classes[_g];
+		++_g;
+		div.classList.add(c);
+	}
+	return div;
 };
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
