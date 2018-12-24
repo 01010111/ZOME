@@ -33,7 +33,9 @@ class App implements IHasContext
 		init_panels();
 		init_modals();
 		levels.add_level('Level');
-		workspace.rebuild(512, 288, 16, 16);
+		workspace.init(() -> {
+			workspace.rebuild(512, 288, 16, 16);
+		});
 	}
 
 	function init_panels()

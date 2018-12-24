@@ -120,7 +120,6 @@ button.red:hover:enabled {
 }
 
 /* DIVS */
-
 .container {
 	display: flex;
 	flex-direction: column;

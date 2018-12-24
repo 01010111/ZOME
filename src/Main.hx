@@ -13,7 +13,9 @@ class Main
 		});
 
 		App.on(ready, (e) -> createWindow());
+		#if !heaps
 		App.disableHardwareAcceleration();
+		#end
 	}
 
 	static function createWindow()
