@@ -1,8 +1,6 @@
 package renderers;
 
 
-import h2d.Graphics;
-import h2d.Tile;
 #if heaps
 import js.Browser.document;
 import js.Browser.window;
@@ -10,7 +8,7 @@ import js.html.Element;
 import js.html.CanvasElement;
 import Defs.LevelData;
 import Defs.IRenderer;
-import h2d.Bitmap;
+import h2d.Graphics;
 import h2d.Interactive;
 import h2d.col.Point;
 import hxd.Key;
