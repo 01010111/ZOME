@@ -11,6 +11,12 @@ interface IModal
 	public function open():Void;
 	public function close():Void;
 }
+interface IRenderer
+{
+	public function create(workspace:Element, on_create:Void->Void):Void;
+	public function rebuild(width:Int, height:Int, tile_width:Int, tile_height:Int):Void;
+    public function load_level(level:LevelData):Void;
+}
 
 typedef ProjectData =
 {
