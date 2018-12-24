@@ -177,7 +177,6 @@ button.red:hover:enabled {
 	background-color: #757989;
 	border: 1px solid #32343C;
 	border-radius: 4px;
-	padding: 8px 16px;
 	overflow: auto;
 }
 
@@ -304,7 +303,7 @@ button.red:hover:enabled {
 	box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
 }
 
-.workspace_tile_container {
+/*.workspace_tile_container {
 	border: 2px solid #C1C5D2;
 	overflow: hidden;
 	margin: auto;
@@ -323,7 +322,7 @@ button.red:hover:enabled {
 	border-right: 0.5px dashed rgba(193, 197, 210, 0.5);
 	border-bottom: 0.5px dashed rgba(193, 197, 210, 0.5);
 	margin: 0;
-}
+}*/
 
 /* BY ID */
 
