@@ -238,7 +238,6 @@ Main.main = function() {
 		Main.createWindow();
 		return;
 	});
-	electron_main_App.disableHardwareAcceleration();
 };
 Main.createWindow = function() {
 	var $window = new electron_main_BrowserWindow({ width : 1280, height : 800, minWidth : 800, minHeight : 600});
@@ -862,6 +861,7 @@ var electron_main_Debugger = require("electron").Debugger;
 var electron_main_DownloadItem = require("electron").DownloadItem;
 var electron_main_Menu = require("electron").Menu;
 var electron_main_MenuItem = require("electron").MenuItem;
+var electron_main_NetLog = require("electron").netLog;
 var electron_main_Protocol = require("electron").protocol;
 var electron_main_Session = require("electron").Session;
 var electron_main_TouchBar = require("electron").TouchBar;
